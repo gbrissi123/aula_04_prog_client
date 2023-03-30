@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LAMP STACK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        span#spanReativo {
+            background: green;
+            color: #fff;
+            border-radius: 5px;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-white py-10">
+    <div class="w-full max-w-2xl mx-auto">
+        <form onsubmit="return enviarFormulario()" method="POST" enctype=multipart/form-data class="flex flex-col space-y-3 w-full">
+            <div>
+                <span>Nome completo</span>
+                <input name="nome_completo" placeholder="Seu nome aqui" type="text"
+                    class="w-full py-2 border-b-2 border-b-gray-200 focus:border-b-sky-500 outline-none">
+            </div>
+
+            <div>
+                <span>Idade</span>
+                <input name="idade" placeholder="Idade" type="number"
+                    class="w-full py-2 border-b-2 border-b-gray-200 focus:border-b-sky-500 outline-none">
+            </div>
+
+            <div>
+                <span>Email</span>
+                <input name="email" id="email" placeholder="Seu nome aqui" type="email"
+                    class="w-full py-2 border-b-2 border-b-gray-200 focus:border-b-sky-500 outline-none">
+            </div>
+
+            <div>
+                <span>Sexo</span>
+                <select name="sexo" type="text"
+                    class="w-full py-2 border-2 border-gray-200 focus:border-b-sky-500 outline-none">
+                    <option value="">Selecione</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="feminino">Feminino</option>
+                    <option value="outros">Outros</option>
+                </select>
+            </div>
+
+            <div>
+                <span class="block">Foto</span>
+                <input type="file" name="foto" accept="">
+            </div>
+
+            <div>
+                <button type="submit"
+                    class="bg-sky-500 py-3 px-6 border-sky-600 border hover:bg-sky-400 text-white font-bold">Enviar</button>
+                <a href="verDados.php" target="_blank"
+                    class="bg-zinc-500 py-3 px-6 border-zinc-600 border hover:bg-zinc-400 text-white font-bold">Ver
+                    dados</a>
+            </div>
+
+            <span id="spanReativo"></span>
+        </form>
+    </div>
+
+    <script>
+        async function enviarFormulario() {
+            let nomeCompletoInput = document.querySelector('input[name="nome_completo"]').value;
+            let idadeInput = document.querySelector('input[name="idade"]').value;
+            let emailInput = document.querySelector('input[name="email"]').value;
+            let fotoInput = document.querySelector('input[name="foto"]').files[0];
+
+            console.log(fotoInput);
+            console.log(nomeCompletoInput)
+            console.log(idadeInput)
+            console.log(emailInput)
+
+            if (nomeCompletoInput.length < 1) {
+                alert('Preencha o campo de nome')
+                return false;
+            }
+
+            if (idadeInput.length < 1 || parseInt(idadeInput) < 18) {
+                alert('Idade inválida')
+                return false;
+            }
+
+            if (emailInput.length < 1) {
+                alert('Preencha o campo de email')
+                return false;
+            }
+
+            // Requisição Ajax utilizando fetch do javascript
+            var formData = new FormData();
+            formData.append('nome_completo', nomeCompletoInput);
+            formData.append('idade', idadeInput);
+            formData.append('email', emailInput);
+            formData.append('foto', fotoInput)
+            formData.append('parametroPersonalizado', 'valor personalizado');
+
+            console.log(formData)
+            console.log('----------')
+            console.log('vou enviar')
+
+            fetch('salvarBanco.php', {
+                method: 'POST',
+                body: formData
+            }).then(function (response) {
+                return response.json();
+            }).then(function (response) {
+                document.querySelector('#spanReativo').innerHTML = response.mensagem;
+            })
+
+            return false;
+        }
+    </script>
+</body>
+
+</html>
